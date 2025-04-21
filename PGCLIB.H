@@ -1,9 +1,7 @@
 #ifndef PGCLIB_H
 #define PGCLIB_H
 
-#define PGC_BUFFER_SIZE 0xFF
-
-#ifdef PGCLIB_C
+#ifndef PGCLIB_C
 
 /* externs */
 extern char pgc_output[];       /* output buffer */
@@ -12,6 +10,9 @@ extern int pgc_output_len;      /* length of output */
 extern int pgc_error_len;       /* length of error */
 
 #endif
+
+#define PGC_BUFFER_SIZE 0xFF
+#define PGC_DELIM 0x20
 
 /* hex commands */
 
@@ -63,7 +64,7 @@ extern int pgc_error_len;       /* length of error */
 #define PGC_MDROTY 0x94
 #define PGC_MDROTZ 0x95
 #define PGC_MDSCAL 0x92
-#define PGC_MDTRAN 0x92     /* wrong? */
+#define PGC_MDTRAN 0x96
 #define PGC_MOVE 0x10
 #define PGC_MOVER 0x11
 #define PGC_MOVE3 0x12

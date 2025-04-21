@@ -134,16 +134,23 @@ inline void pgc_mode_ascii()
 	if (ascii_mode == FALSE)
 	{
 		ascii_mode = TRUE;
-		pgc_write(PGC_CA);
+		/* pgc_write(PGC_CA); */
+		pgc_write(0x43);
+		pgc_write(0x41);
+		pgc_write(PGC_DELIM);
 	}
 }
 
+/* Set Hex mode */
 inline void pgc_mode_hex()
 {
 	if (ascii_mode == TRUE)
 	{
 		ascii_mode = FALSE;
-		pgc_write(PGC_CX);
+		/* pgc_write(PGC_CX); */
+		pgc_write(0x43);
+		pgc_write(0x58);
+		pgc_write(PGC_DELIM);
 	}
 }
 
