@@ -1,7 +1,7 @@
 #ifndef PGCLIB_H
 #define PGCLIB_H
 
-#define PGC_BUFFER_SIZE 2048    /* need to verify maximum size */
+#define PGC_BUFFER_SIZE 0xFF
 
 #ifdef PGCLIB_C
 
