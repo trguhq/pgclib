@@ -162,7 +162,7 @@ inline void pgc_write(byte b)
 }
 
 /* Read output buffer */
-int pgc_output_read()
+void pgc_output_read()
 {
 	int rv;
 
@@ -170,20 +170,18 @@ int pgc_output_read()
 
     while (1)
 	{
-		if (OUT_WRPTR == OUT_RDPTR) return pgc_error_len;
+		if (OUT_WRPTR == OUT_RDPTR) return;
 
 		rv = gl_pgc[0x100 + OUT_RDPTR];
 		++OUT_RDPTR;
 		if (pgc_output_len > PGC_BUFFER_SIZE - 1 ||
-			rv == EOF) return pgc_error_len;
+			rv == EOF) return;
 		pgc_output[pgc_output_len++] = rv;
 	}
-
-	return pgc_output_len;	
 }
 
 /* Read error buffer */
-int pgc_error_read()
+void pgc_error_read()
 {
 	int rv;
 
@@ -191,21 +189,50 @@ int pgc_error_read()
 
 	while (1)
 	{
-		if (ERR_RDPTR == ERR_WRPTR) return pgc_error_len;
+		if (ERR_RDPTR == ERR_WRPTR) return;
 
 		rv = gl_pgc[0x200 + ERR_RDPTR];
 		++ERR_RDPTR;
 
 		if (pgc_error_len > PGC_BUFFER_SIZE - 1 ||
-			rv == EOF) return pgc_error_len;
+			rv == EOF) return;
 		pgc_error[pgc_output_len++] = rv;
 	}
+}
 
-	return pgc_error_len;	
+/* Generate a text error message. */
+char far * pgc_error_string(byte err)
+{
+	switch (err)
+	{
+		case PGC_ERR_RANGE:
+			return("Parameter out of range.");
+		case PGC_ERR_INT:
+			return("Need integer.");
+		case PGC_ERR_MEM:
+			return("Out of memory.");
+		case PGC_ERR_OVER:
+			return("Arithmetic verflow.");
+		case PGC_ERR_DIGIT:
+			return("Need digit.");
+		case PGC_ERR_OP:
+			return("Illegal opcode.");
+		case PGC_ERR_REC:
+			return("Recursion in command list.");
+		case PGC_ERR_STACK:
+			return("Nested command lists.");
+		case PGC_ERR_LONG:
+			return("Command too long.");
+		case PGC_ERR_AREA:
+			return("Area fill error.");
+		case PGC_ERR_MISSING:
+			return("Missing paramerter.");
+	}
+
 }
 
 /* Write an ASCII command to the PGC. */
-void pgc_command_string(const char *s)
+void pgc_command_string(const char far *s)
 {
 	pgc_mode_ascii();
 
@@ -227,7 +254,7 @@ void pgc_command_string(const char *s)
  * buffer_len = length of command data
  * 
  */
-inline void pgc_command_hex(char command, char* buffer, int buffer_len)
+inline void pgc_command_hex(char command, char far* buffer, int buffer_len)
 {
 	int p;
 

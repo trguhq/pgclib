@@ -14,6 +14,20 @@ extern int pgc_error_len;       /* length of error */
 #define PGC_BUFFER_SIZE 0xFF
 #define PGC_DELIM 0x20
 
+/* errors */
+
+#define PGC_ERR_RANGE 0x1
+#define PGC_ERR_INT 0x2         /* ascii mode only */
+#define PGC_ERR_MEM 0x3
+#define PGC_ERR_OVER 0x4
+#define PGC_ERR_DIGIT 0x5       /* ascii mode only */
+#define PGC_ERR_OP 0x6
+#define PGC_ERR_REC 0x7
+#define PGC_ERR_STACK 0x8
+#define PGC_ERR_LONG 0x9
+#define PGC_ERR_AREA 0xA
+#define PGC_ERR_MISSING 0xB     /* ascii mode only */
+
 /* hex commands */
 
 #define PGC_ARC	0x3C
