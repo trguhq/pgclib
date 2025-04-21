@@ -28,11 +28,14 @@ Copyright (c) 2025 trguhq
 Same zLib license.
 */
 
+#define PGCLIB_C
+
 #include <stdio.h>
 #include <string.h>
 #include <dos.h>
 #include <ctype.h>
 #include <conio.h>
+#include "PGCLIB.H"
 
 typedef unsigned char byte;
 
@@ -48,11 +51,18 @@ typedef unsigned char byte;
 #define ERR_RDPTR (gl_pgc[0x305])
 
 static char ascii_mode;
+char pgc_output[PGC_BUFFER_SIZE];
+char pgc_error[PGC_BUFFER_SIZE];
+int pgc_output_len;
+int pgc_error_len;
 
 /* Initialize library */
 void pgc_init()
 {
 	ascii_mode = FALSE;
+	pgc_out_len = 0;
+	pgc_err_len = 0;
+
 	pgc_say("CX\n");
 }
 
@@ -62,7 +72,7 @@ void pgc_mode_ascii()
 	if (ascii_mode == FALSE)
 	{
 		ascii_mode = TRUE;
-	    pgc_say("CA\n");
+		pgc_say("CA\n");		/* one fewer byte if done in hex? */
 	}
 }
 
@@ -71,120 +81,97 @@ void pgc_mode_hex()
 	if (ascii_mode == TRUE)
 	{
 		ascii_mode = FALSE;
-		pgc_sac("CX\n");
+		pgc_say("CX\n");
 	}
 }
 
 /* Write a byte to the PGC command buffer. */
-void pgc_write(byte b)
+inline void pgc_write(byte b)
 {
 	gl_pgc[IN_WRPTR] = b;
 	++IN_WRPTR;
 }
 
-/* Read a byte from the PGC output buffer. Returns EOF if no data available. */
-int pgc_rdout()
+/* Read output buffer */
+int pgc_output_read()
 {
 	int rv;
 
-	if (OUT_WRPTR == OUT_RDPTR) return EOF;
+	pgc_output_len = 0;
 
-	rv = gl_pgc[0x100 + OUT_RDPTR];
-	++OUT_RDPTR;
-	return rv;	
+    while (1)
+	{
+		if (OUT_WRPTR == OUT_RDPTR) return pgc_error_len;
+
+		rv = gl_pgc[0x100 + OUT_RDPTR];
+		++OUT_RDPTR;
+		if (pgc_output_len > PGC_BUFFER_SIZE - 1 ||
+			rv == EOF) return pgc_error_len;
+		pgc_output[pgc_output_len++] = rv;
+	}
+
+	return pgc_output_len;	
 }
 
-/* Read a byte from the PGC error buffer. Returns EOF if no data available. */
-int pgc_rderr()
+/* Read error buffer */
+int pgc_error_read()
 {
 	int rv;
 
-	if (ERR_RDPTR == ERR_WRPTR) return EOF;
+	pgc_error_len = 0;
 
-	rv = gl_pgc[0x200 + ERR_RDPTR];
-	++ERR_RDPTR;
-	return rv;	
+	while (1)
+	{
+		if (ERR_RDPTR == ERR_WRPTR) return pgc_error_len;
+
+		rv = gl_pgc[0x200 + ERR_RDPTR];
+		++ERR_RDPTR;
+
+		if (pgc_error_len > PGC_BUFFER_SIZE - 1 ||
+			rv == EOF) return pgc_error_len;
+		pgc_error[pgc_output_len++] = rv;
+	}
+
+	return pgc_error_len;	
 }
 
 /* Write an ASCII command to the PGC. */
-void pgc_cmd(const char *s)
+void pgc_command_string(const char *s)
 {
+	pgc_mode_ascii();
+
 	while (*s)
 	{
 		pgc_write(*s);
 		++s;
 	}
+
+	pgc_output_read();
+	pgc_error_read();
 }
 
-/* Write an ASCII command to the PGC. Display any results returned. */
-void pgc_say(const char *s)
-{
-	int ch, n;
-
-    pgc_mode_ascii();
-	pgc_cmd(s);
-
-	n = 0;
-	while ((ch = pgc_rdout()) != EOF)
-	{
-		if (!n) { printf("Out: "); ++n; }
-		putchar(ch);
-	}
-	if (n) printf("\n");
-	n = 0;
-	while ((ch = pgc_rderr()) != EOF)
-	{
-		if (!n) { printf("Err: "); ++n; }
-		putchar(ch);
-	}
-	if (n) printf("\n");
-
-}
-
-/* Write a Hex command to the PGC. Display any results returned as Hex.
+/* 
+ * Write a Hex command to the PGC.
  *
+ * command = byte command
+ * buffer = pointer to command data
+ * buffer_len = length of command data
+ * 
  */
-void pgc_xsay(const char *s)
+inline void pgc_command_hex(char command, char* buffer, int buffer_len)
 {
-	char buf[128], *p;
-	char x[3];
-	int hexv, n, ch;
+	int p;
 
 	pgc_mode_hex();
 
-/* Extract only hex digits from the passed string */
-	p = buf;
-	while (*s)
+	pgc_write(command);
+
+	p = 0;
+    while (p < buffer_len)
 	{
-		if (isxdigit(*s)) *p++ = *s;
-		++s;	
+		pgc_write(buffer[p]);
 	}
-	*p = 0;
-	p = buf;
-/* Parse each pair of digits as a hex byte, and feed that to the PGC */
-	while (*p)
-	{
-		sprintf(x, "%-2.2s", p);
-		if (strlen(p) < 2) p = "";
-		else p += 2;
-		sscanf(x, "%x", &hexv);
-		printf("%02x ", hexv);
-		pgc_write(hexv);
-	}
-	printf("\n");
-/* Read output and error, and render them as Hex. */
-	n = 0;
-	while ((ch = pgc_rdout()) != EOF)
-	{
-		if (!n) { printf("Out: "); ++n; }
-		printf("%02x ", ch);
-	}
-	if (n) printf("\n");
-	n = 0;
-	while ((ch = pgc_rderr()) != EOF)
-	{
-		if (!n) { printf("Err: "); ++n; }
-		printf("%02x ", ch);
-	}
-	if (n) printf("\n");
+    
+	pgc_output_read();
+	pgc_error_read();
 }

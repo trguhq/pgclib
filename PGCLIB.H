@@ -1,6 +1,18 @@
 #ifndef PGCLIB_H
 #define PGCLIB_H
 
+#define PGC_BUFFER_SIZE 2048    /* need to verify maximum size */
+
+#ifdef PGCLIB_C
+
+/* externs */
+extern char pgc_output[];       /* output buffer */
+extern char pgc_error[];        /* error buffer */
+extern int pgc_output_len;      /* length of output */
+extern int pgc_error_len;       /* length of error */
+
+#endif
+
 /* hex commands */
 
 #define PGC_ARC	0x3C
@@ -51,7 +63,7 @@
 #define PGC_MDROTY 0x94
 #define PGC_MDROTZ 0x95
 #define PGC_MDSCAL 0x92
-#define PGC_MDTRAN 0x92 /* wrong? */
+#define PGC_MDTRAN 0x92     /* wrong? */
 #define PGC_MOVE 0x10
 #define PGC_MOVER 0x11
 #define PGC_MOVE3 0x12
