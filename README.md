@@ -5,4 +5,7 @@ Posted to github and subsequent modifications by trguhq, 2025 and on.
 
 This is a C library to interface with the IBM PGC card and compatibles.
 
+This is not in a working state at the moment and has not even been
+compiled to test. Purely a development snapshot.
+
 ## API
