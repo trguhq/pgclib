@@ -93,7 +93,9 @@ int pgc_init()
 	pgc_err_len = 0;
 
 	ascii_mode = FALSE;
-	pgc_mode_hex();
+	pgc_write(0x43);
+	pgc_write(0x58);
+	pgc_write(PGC_DELIM);
 }
 
 /* PGC self-test */
