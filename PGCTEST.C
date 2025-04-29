@@ -33,7 +33,7 @@ Same zLib license.
 #include "PGCLIB.H"
 #include "PGCTEST.H"
 
-void main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     int result;
 
@@ -56,4 +56,6 @@ void main(int argc, char** argv)
     printf("PGC RAM test:");
     result = pgc_selftest_ram_pass();
     printf("%s\n", (result ? "success" : "fail"));
+
+    return 0;
 }
