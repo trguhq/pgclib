@@ -44,6 +44,8 @@
 #endif
 
 typedef unsigned char byte;
+typedef short int word;
+typedef struct coord {word integer; unsigned int fraction;} coord;
 
 /* externs */
 #ifndef PGCLIB_C
