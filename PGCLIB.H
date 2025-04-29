@@ -189,6 +189,34 @@ extern int pgc_selftest_ram_pass();
 #define PGC_LINPAT 0xEA     /* pattern (1 word) */
 #define PGC_LUT 0xEE        /* ink,r,g,b (4 bytes) */
 #define PGC_LUTINT 0xEC     /* palette (1 byte) */
+/* The standard palettes are:
+ *
+ * 0 - Default 256-colour palette
+ * Low 4 bits of ink give intensity, high 4 bits give colour
+ * 0=Grey, 1=Red, 2=Red/Magenta, 3=Magenta, 4=Violet, 5=Blue, 
+ * 6=Blue/Cyan, 7=Cyan, 8=Cyan/Green, 9=Green, 10=Green/Yellow, 
+ * 11=Yellow, 12=Orange, 13=Red, 14=Green, 15=Blue
+ * 
+ * 1 - 16-colour palette (for making the PGC behave as two 16-colour planes)
+ * If high 4 bits of ink are 0, low 4 bits give colour;
+ * otherwise, high 4 bits give colour.
+ * 0=Cyan, 1=Black, 2=Dark Brown, 3=Light Brown, 4=Red/Brown, 5=Red,
+ * 6=Orange, 7=Yellow, 8=Yellow/Green, 9=Green, 10=Dark Green, 11=Dark Cyan,
+ * 12=Blue, 13=Salmon, 14=Grey, 15=White
+ *
+ * 2 - 2-3-3 truecolour palette
+ * Bits 0-2 of ink give blue; bits 3-5 give green; bits 6,7 give red.
+ * 
+ * 3 - 3-2-3 truecolour palette
+ * Bits 0-2 of ink give blue; bits 3-4 give green; bits 5-7 give red.
+ * 
+ * 4 - 3-3-2 truecolour palette
+ * Bits 0,1 of ink give blue; bits 2-4 give green; bits 5-7 give red.
+ * 
+ * 5 - 6x6x6 colour cube
+ * 
+ * 255 - Restore palette previously saved with the LUTSAV command
+ */
 #define PGC_LUTRD 0x50      /* ink (1 byte) */
 #define PGC_LUTSAV 0xED     /* none */
 #define PGC_MASK 0xE8       /* mask (1 byte) */
