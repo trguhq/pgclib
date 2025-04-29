@@ -98,6 +98,16 @@ int pgc_init()
 	pgc_write(PGC_DELIM);
 }
 
+int pgc_version_major()
+{
+	return PGC_VERSION_MAJOR;
+}
+
+int pgc_version_minor()
+{
+	return PGC_VERSION_MINOR;
+}
+
 /* PGC self-test */
 int pgc_selftest_pass()
 {

@@ -10,14 +10,23 @@
 #endif
 
 #ifndef PGCLIB_C
-
 /* externs */
 extern char pgc_output[];       /* output buffer */
 extern char pgc_error[];        /* error buffer */
 extern int pgc_output_len;      /* length of output */
 extern int pgc_error_len;       /* length of error */
 
+extern int pgc_init();
+extern int pgc_version_major();
+extern int pgc_version_minor();
+extern int pgc_selftest_pass();
+extern int pgc_selftest_rom_low_pass();
+extern int pgc_selftest_rom_high_pass();
+extern int pgc_selftest_ram_pass();
 #endif
+
+#define PGCLIB_VERSION_MAJOR 0
+#define PGCLIB_VERSION_MINOR 1
 
 #define PGC_BUFFER_SIZE 0xFF
 #define PGC_DELIM 0x20
