@@ -11,8 +11,8 @@
 
 typedef unsigned char byte;
 
-#ifndef PGCLIB_C
 /* externs */
+#ifndef PGCLIB_C
 extern char pgc_output[];       /* output buffer */
 extern char pgc_error[];        /* error buffer */
 extern int pgc_output_len;      /* length of output */
@@ -72,8 +72,8 @@ extern int pgc_selftest_ram_pass();
 #define PGC_ROM_HIGH (gl_pgc[0x3FD])        /* 0xFF fail 0x55 pass */
 #define PGC_RAM (gl_pgc[0x3FE])             /* 0xFF fail 0xAA pass */
 #define PGC_CMD_REBOOT (gl_pgc[0x3FF])      /* write 0x50 */
-										    /* wait 2 system clock */
-										    /* write 0xA0 */
+                                            /* wait 2 system clock */
+                                            /* write 0xA0 */
 
 /* errors */
 #define PGC_ERR_RANGE 0x1
@@ -89,85 +89,99 @@ extern int pgc_selftest_ram_pass();
 #define PGC_ERR_MISSING 0xB     /* ascii mode only */
 
 /* hex commands */
-#define PGC_ARC	0x3C
-#define PGC_AREA 0xC0
-#define PGC_AREABC 0xC1
-#define PGC_AREAPT 0xE7
-#define PGC_BUFFER 0x4F
-#define PGC_CA 0xD2             /* or 43 41 */
-#define PGC_CIRCLE 0x38
-#define PGC_CLBEG 0x70
-#define PGC_DLDEL 0x74
-#define PGC_CLEARS 0x0F
-#define PGC_CLEND 0x71
-#define PGC_CLIPH 0xAA
-#define PGC_CLIPY 0xAB
-#define PGC_CLOOP 0x73
-#define PGC_CLRD 0x75
-#define PGC_CLRUN 0x72
-#define PGC_COLOR 0x06
-#define PGC_CONVRT 0xAF
-#define PGC_CX 0xD1             /* or 43 58 */
-#define PGC_DISPLA 0xD0
-#define PGC_DISTAN 0xB1
-#define PGC_DISTH 0xA8
-#define PGC_DISTY 0xA9
-#define PGC_DRAW 0x28
-#define PGC_DRAWR 0x29
-#define PGC_DRAW3 0x2A
-#define PGC_DRAWR3 0x2B
-#define PGC_ELIPSE 0x39
-#define PGC_FILMSK 0xEF
-#define PGC_FLAGRD 0x51
-#define PGC_FLOOD 0x07
-#define PGC_IMAGER 0xD8
-#define PGC_IMAGEW 0xD9
-#define PGC_LINFUN 0xEB
-#define PGC_LINPAT 0xEA
-#define PGC_LUT 0xEE
-#define PGC_LUTINT 0xEC
-#define PGC_LUTRD 0x50
-#define PGC_LUTSAV 0xED
-#define PGC_MASK 0xE8
-#define PGC_MATXRD 0x52
-#define PGC_MDIEN 0x90
-#define PGC_MDMATX 0x97
-#define PGC_MDORG 0x91
-#define PGC_MDROTX 0x93
-#define PGC_MDROTY 0x94
-#define PGC_MDROTZ 0x95
-#define PGC_MDSCAL 0x92
-#define PGC_MDTRAN 0x96
-#define PGC_MOVE 0x10
-#define PGC_MOVER 0x11
-#define PGC_MOVE3 0x12
-#define PGC_MOVER3 0x13
-#define PGC_POINT 0x08
-#define PGC_POINT3 0x09
-#define PGC_POLY 0x30
-#define PGC_POLYR 0x31
-#define PGC_POLY3 0x32
-#define PGC_PRMFIL 0xE9
-#define PGC_PROJCT 0xB0
-#define PGC_RECT 0x34
-#define PGC_RECTR 0x35
-#define PGC_RESETF 0x04
-#define PGC_SCAN 0x5F
-#define PGC_SECTOR 0x3D
-#define PGC_TANGLE 0x82
-#define PGC_TDEFIN 0x84
-#define PGC_TEXT 0x80
-#define PGC_TEXTP 0x83
-#define PGC_TJUST 0x85
-#define PGC_TSIZE 0x81
-#define PGC_VWIDEN 0xA0
-#define PGC_VWMATX 0xA7
-#define PGC_VWPORT 0xB2
-#define PGC_VWRPT 0xA1
-#define PGC_VWROTX 0xA3
-#define PGC_VWROTY 0xA4
-#define PGC_VWROTZ 0xA5
-#define PGC_WAIT 0x05
-#define PGC_WINDOW 0xB3
+#define PGC_ARC	0x3C        /* radius,angle1,angle2 (1 coord, 2 words) */
+#define PGC_AREA 0xC0       /* none */
+#define PGC_AREABC 0xC1     /* color (1 byte) */
+#define PGC_AREAPT 0xE7     /* word,word... (16 words) */
+#define PGC_BUFFER 0x4F     /* p,q (2 bytes) */
+#define PGC_CA 0xD2         /* or 0x43 0x41 */
+#define PGC_CIRCLE 0x38     /* radius (1 coord) */
+#define PGC_CLBEG 0x70      /* id (1 byte) */
+#define PGC_CLDEL 0x74      /* id (1 byte) */
+#define PGC_CLEARS 0x0F     /* color (1 byte) */
+#define PGC_CLEND 0x71      /* none */
+#define PGC_CLIPH 0xAA      /* mode (1 byte) */
+#define PGC_CLIPY 0xAB      /* mode (1 byte) */
+#define PGC_CLOOP 0x73      /* id,reps (1 byte, 1 word) */
+#define PGC_CLRD 0x75       /* id (1 byte) */
+#define PGC_CLRUN 0x72      /* id (1 byte) */
+#define PGC_COLOR 0x06      /* color (1 byte) */
+#define PGC_CONVRT 0xAF     /* none */
+#define PGC_CX 0xD1         /* or 0x43 0x58 */
+#define PGC_DISPLA 0xD0     /* mode (1 byte) */
+#define PGC_DISTAN 0xB1     /* distance (1 coord) */
+#define PGC_DISTH 0xA8      /* distance (1 coord) */
+#define PGC_DISTY 0xA9      /* distance (1 coord) */
+#define PGC_DRAW 0x28       /* x,y (2 coords) */
+#define PGC_DRAWR 0x29      /* dx,yx (2 coords) */
+#define PGC_DRAW3 0x2A      /* x,y,z (3 coords) */
+#define PGC_DRAWR3 0x2B     /* dx,dy,dz (3 coords) */
+#define PGC_ELIPSE 0x39     /* width,height (2 coords) */
+#define PGC_FILMSK 0xEF     /* mask (1 byte) */
+#define PGC_FLAGRD 0x51     /* flag num (1 byte) */
+#define PGC_FLOOD 0x07      /* color (1 byte) */
+#define PGC_IMAGER 0xD8     /* row,col1,col2 (3 words) */
+#define PGC_IMAGEW 0xD9     /* row,col1,col2,data (3 words)*/
+#define PGC_LINFUN 0xEB     /* mode (1 byte) */
+#define PGC_LINPAT 0xEA     /* pattern (1 word) */
+#define PGC_LUT 0xEE        /* ink,r,g,b (4 bytes) */
+#define PGC_LUTINT 0xEC     /* palette (1 byte) */
+#define PGC_LUTRD 0x50      /* ink (1 byte) */
+#define PGC_LUTSAV 0xED     /* none */
+#define PGC_MASK 0xE8       /* mask (1 byte) */
+#define PGC_MATXRD 0x52     /* id (1 byte) */
+#define PGC_MDIDEN 0x90     /* none */
+#define PGC_MDMATX 0x97     /* coord,coord... (16 coords) */
+#define PGC_MDORG 0x91      /* x,y,z (3 coords) */
+#define PGC_MDROTX 0x93     /* angle (1 word) */
+#define PGC_MDROTY 0x94     /* angle (1 word) */
+#define PGC_MDROTZ 0x95     /* angle (1 word) */
+#define PGC_MDSCAL 0x92     /* x,y,z (3 coords) */
+#define PGC_MDTRAN 0x96     /* dx,dy,dz (3 coords) */
+#define PGC_MOVE 0x10       /* x,y (2 coords) */
+#define PGC_MOVER 0x11      /* dx,dy (2 coords) */
+#define PGC_MOVE3 0x12      /* x,y,z (3 coords) */
+#define PGC_MOVER3 0x13     /* dx,dy,dz (3 coords) */
+#define PGC_POINT 0x08      /* none */
+#define PGC_POINT3 0x09     /* none */
+#define PGC_POLY 0x30       /* count,x1,y1,x2,y2... */
+#define PGC_POLYR 0x31      /* count,x1,y1,x2,y2... */
+#define PGC_POLY3 0x32      /* count,x1,y1,z1... */
+#define PGC_POLYR3 0x33     /* count,x1,y1,z1... */
+#define PGC_PRMFIL 0xE9     /* fill (1 byte) */
+#define PGC_PROJCT 0xB0     /* angle (1 word) */
+#define PGC_RECT 0x34       /* x,y (2 coords) */
+#define PGC_RECTR 0x35      /* dx,dy (2 coords) */
+#define PGC_RESETF 0x04     /* none */
+#define PGC_SCAN 0x5F       /* search (1 byte) */
+#define PGC_SECTOR 0x3D     /* radius,angle1,angle2 */
+#define PGC_TANGLE 0x82     /* angle (1 word) */
+#define PGC_TDEFIN 0x84     /* id,width,height,bits*/
+#define PGC_TEXT 0x80       /* "text" or 'text' */
+#define PGC_TEXTP 0x83      /* "text" or 'text' */
+#define PGC_TJUST 0x85      /* 2 bytes */
+#define PGC_TSIZE 0x81      /* size (1 coord) */
+#define PGC_VWIDEN 0xA0     /* none */
+#define PGC_VWMATX 0xA7     /* coord1,coord2... (16 coords) */
+#define PGC_VWPORT 0xB2     /* x1,x2,y1,y2 (4 words) */
+#define PGC_VWRPT 0xA1      /* x,y,z (3 coords) */
+#define PGC_VWROTX 0xA3     /* angle */
+#define PGC_VWROTY 0xA4     /* angle */
+#define PGC_VWROTZ 0xA5     /* angle */
+#define PGC_WAIT 0x05       /* delay (1 word) */
+#define PGC_WINDOW 0xB3     /* x1,x2,y1,y2 (4 words) */
+
+/* 
+ * Undocumented hex mode command for 8088 to jump to location in buffer
+ * argument: segment, offset, checksum (3 words)
+ * If segment + offset + checksum = 0, the PGC's processor will do a far
+ * jump to specified address in transfer buffer which is at location
+ * 28000h to 283FFh hfrom the PGC's 8088's point of view.
+ * To return control to the normal firmware, the IBM diagnostic program 
+ * jumps to FFFF:0008h; INT 3 may also work.
+ */
+#define PGC_JUMP1 0x5B 
+#define PGC_JUMP2 0x71 
+#define PGC_JUMP3 0x8C
 
 #endif /* PGCLIB_H */
