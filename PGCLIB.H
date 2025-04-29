@@ -9,6 +9,8 @@
 #define FALSE 0
 #endif
 
+typedef unsigned char byte;
+
 #ifndef PGCLIB_C
 /* externs */
 extern char pgc_output[];       /* output buffer */
@@ -30,6 +32,48 @@ extern int pgc_selftest_ram_pass();
 
 #define PGC_BUFFER_SIZE 0xFF
 #define PGC_DELIM 0x20
+
+/* Base address of the PGC transfer buffer*/
+#define gl_pgc ((byte far *)MK_FP(0xC600, 0))
+
+/* PGC ring buffer pointers */
+#define PGC_IN_WRPTR (gl_pgc[0x300])
+#define PGC_IN_RDPTR (gl_pgc[0x301])
+#define PGC_OUT_WRPTR (gl_pgc[0x302])
+#define PGC_OUT_RDPTR (gl_pgc[0x303])
+#define PGC_ERR_WRPTR (gl_pgc[0x304])
+#define PGC_ERR_RDPTR (gl_pgc[0x305])
+
+/* other */
+#define PGC_FLAG_COLD (gl_pgc[0x306]);		/* cold start flag */
+#define PGC_FLAG_WARM (gl_pgc[0x307]);		/* warm start flag */
+#define PGC_CMD_ERROR (gl_pgc[0x308]);		/* set to !0 for errors */
+#define PGC_FLAG_WARM2 (gl_pgc[0x309]);		/* set when warm start flag is */
+#define PGC_FLAG_CGA (gl_pgc[0x30B]);		/* !0 if CGA mode available */
+#define PGC_CMD_CGA (gl_pgc[0x30C]);		/* set to 1 for CGA, 0 PGC */
+#define PGC_ACK_DISP (gl_pgc[0x30D]);
+#define PGC_REQ_CGA_BUF (gl_pgc[0x30E]);
+#define PGC_ACK_CGA_BUF (gl_pgc[0x30F]);
+#define PGC_REG (gl_pgc[0x310]);		    /* 0x11 bytes */
+#define PGC_CGA_VERT_TOTAL (gl_pgc[0x322]);
+#define PGC_CGA_VERT_DISP (gl_pgc[0x323]);
+#define PGC_CGA_VERT_ADJ (gl_pgc[0x324]);
+#define PGC_CGA_VERT_SYNC (gl_pgc[0x325]);
+#define PGC_CGA_CUR_SIZE (gl_pgc[0x327]);	/* 2 bytes */
+#define PGC_CGA_CUR_ADD (gl_pgc[0x329]);	/* 2 bytes */
+#define PGC_CGA_SCR_START (gl_pgc[0x32B]);	/* 2 bytes */
+#define PGC_PORT_03D8 (gl_pgc[0x3D8]);
+#define PGC_PORT_03D9 (gl_pgc[0x3D9]);
+#define PGC_PRES (gl_pgc[0x3DB]);		    /* presence test byte */
+#define PGC_CGA_CRTC (gl_pgc[0x3E0]);		/* 0x13 bytes */
+#define PGC_FIRM_VER (gl_pgc[0x3F8]);	    /* 2 bytes */
+#define PGC_PASS (gl_pgc[0x3FB]);		    /* 0xA5 pass */
+#define PGC_ROM_LOW (gl_pgc[0x3FC]);        /* 0xFF fail 0x5A pass */
+#define PGC_ROM_HIGH (gl_pgc[0x3FD]);	    /* 0xFF fail 0x55 pass */
+#define PGC_RAM (gl_pgc[0x3FE]);		    /* 0xFF fail 0xAA pass */
+#define PGC_CMD_REBOOT (gl_pgc[0x3FF]);		/* write 0x50 */
+										    /* wait 2 system clock */
+										    /* write 0xA0 */
 
 /* errors */
 
