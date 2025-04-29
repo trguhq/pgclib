@@ -127,7 +127,7 @@ extern int pgc_selftest_ram_pass();
 #define PGC_LINFUN 0xEB
 #define PGC_LINPAT 0xEA
 #define PGC_LUT 0xEE
-#define PGC LUTINT 0xEC
+#define PGC_LUTINT 0xEC
 #define PGC_LUTRD 0x50
 #define PGC_LUTSAV 0xED
 #define PGC_MASK 0xE8
