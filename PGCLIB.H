@@ -1,3 +1,37 @@
+/*
+ * Original PGCTALK/PGCBMP copyright:
+ * 
+ * Copyright (c) 2004 John Elliott <jce@seasip.demon.co.uk>
+ * 
+ * This software is provided 'as-is', without any express or implied warranty. 
+ * In no event will the authors be held liable for any damages arising from the 
+ * use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose, 
+ * including commercial applications, and to alter it and redistribute it 
+ * freely, subject to the following restrictions:
+ *
+ *     1. The origin of this software must not be misrepresented; you must not 
+ * claim that you wrote the original software. If you use this software in a 
+ * product, an acknowledgment in the product documentation would be appreciated
+ * but is not required.
+ *
+ *     2. Altered source versions must be plainly marked as such, and must not 
+ * be misrepresented as being the original software.
+ *
+ *     3. This notice may not be removed or altered from any source distribution.
+ *
+ * PGCLIB:
+ *
+ * Copyright (c) 2025 trguhq
+ *
+ * Same zLib license.
+ *
+ * Documentation:
+ *
+ * IBM technical reference and https://www.seasip.info/VintagePC/pgc.html
+*/
+
 #ifndef PGCLIB_H
 #define PGCLIB_H
 
@@ -119,6 +153,33 @@ extern int pgc_selftest_ram_pass();
 #define PGC_ELIPSE 0x39     /* width,height (2 coords) */
 #define PGC_FILMSK 0xEF     /* mask (1 byte) */
 #define PGC_FLAGRD 0x51     /* flag num (1 byte) */
+/* Flags:
+ * 1 The fill pattern (set by AREAPT). Returns 16 words.
+ * 2 The "Hither" clip flag (set by CLIPH). Returns 1 byte.
+ * 3 The "Yon" clip flag (set by CLIPY). Returns 1 byte.
+ * 4 The current pen colour (set by COLOR). Returns 1 byte.
+ * 5 The current display mode (set by DISPLAY). Returns 1 byte.
+ * 6 The viewing distance (set by DISTAN). Returns 1 coord.
+ * 7 The "Hither" clip value (set by DISTH). Returns 1 coord.
+ * 8 The "Yon" clip value (set by DISTY). Returns 1 coord.
+ * 9 The fill mask (set by FILMSK). Returns 1 byte.
+ * 10 The value set by LINFUN. Returns 1 byte.
+ * 11 The value set by LINPAT. Returns 1 word.
+ * 12 The plane mask (set by MASK). Returns 1 byte.
+ * 13 The model matrix origin (set by MDORG). Returns 3 coords.
+ * 14 Return current 2D drawing position. Returns 2 coords.
+ * 15 Return current 3D drawing position. Returns 3 coords.
+ * 16 Return polygon fill mode (set by PRMFIL). Returns 1 byte.
+ * 17 The current projection angle (set by PROJCT). Returns 1 byte.
+ * 18 The text angle (set by TANGLE). Returns 1 word.
+ * 19 The text justification settings (set by TJUST). Returns 2 bytes.
+ * 20 The text size (set by TSIZE). Returns 1 coord.
+ * 21 Viewport parameters. Returns 4 words.
+ * 22 Viewport reference point (set by VWRPT). Returns 3 coords.
+ * 23 Window parameters (set by WINDOW). Returns 4 coords.
+ * 24 Transformed 3D current point. Returns 3 coords.
+ * 25 Free memory. Returns 1 word.
+ */
 #define PGC_FLOOD 0x07      /* color (1 byte) */
 #define PGC_IMAGER 0xD8     /* row,col1,col2 (3 words) */
 #define PGC_IMAGEW 0xD9     /* row,col1,col2,data (3 words)*/
