@@ -69,6 +69,7 @@ extern int pgc_get_ascii_mode();
 extern int pgc_get_error_mode();
 extern int pgc_get_cga_mode();
 extern int pgc_get_cga_mode_avail();
+extern word pgc_get_firmware_ver();
 extern word pgc_flagrd_free_mem();
 
 #endif /* PGCLIB_C */

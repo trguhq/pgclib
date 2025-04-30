@@ -191,6 +191,14 @@ char pgc_get_cga_mode_avail()
 	return cga_mode_available;
 }
 
+/* Get firmware version */
+word pgc_get_firmware_ver()
+{
+	/* change this to a macro */
+	return ((word) gl_pgc[PGC_FIRM_VER] + 
+		((word) gl_pgc[PGC_FIRM_VER + 1] << 8));
+}
+
 /* Write a byte to the PGC command buffer. */
 inline void pgc_write(byte b)
 {

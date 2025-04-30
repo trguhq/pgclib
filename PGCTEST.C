@@ -44,6 +44,7 @@ int main(int argc, char** argv)
     printf("PGC init: ");
     result = pgc_init();
     printf("%s\n", (result ? "success" : "fail"));
+    printf("Firmware version: %i\n", pgc_get_firmware_ver());
     printf("PGC self test: ");
     result = pgc_selftest_pass();
     printf("%s\n", (result ? "success" : "fail"));
