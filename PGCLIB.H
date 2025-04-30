@@ -165,33 +165,31 @@ extern word pgc_flagrd_free_mem();
 #define PGC_ELIPSE 0x39     /* width,height (2 coords) */
 #define PGC_FILMSK 0xEF     /* mask (1 byte) */
 #define PGC_FLAGRD 0x51     /* flag num (1 byte) */
-/* Flags:
- * 1 The fill pattern (set by AREAPT). Returns 16 words.
- * 2 The "Hither" clip flag (set by CLIPH). Returns 1 byte.
- * 3 The "Yon" clip flag (set by CLIPY). Returns 1 byte.
- * 4 The current pen colour (set by COLOR). Returns 1 byte.
- * 5 The current display mode (set by DISPLAY). Returns 1 byte.
- * 6 The viewing distance (set by DISTAN). Returns 1 coord.
- * 7 The "Hither" clip value (set by DISTH). Returns 1 coord.
- * 8 The "Yon" clip value (set by DISTY). Returns 1 coord.
- * 9 The fill mask (set by FILMSK). Returns 1 byte.
- * 10 The value set by LINFUN. Returns 1 byte.
- * 11 The value set by LINPAT. Returns 1 word.
- * 12 The plane mask (set by MASK). Returns 1 byte.
- * 13 The model matrix origin (set by MDORG). Returns 3 coords.
- * 14 Return current 2D drawing position. Returns 2 coords.
- * 15 Return current 3D drawing position. Returns 3 coords.
- * 16 Return polygon fill mode (set by PRMFIL). Returns 1 byte.
- * 17 The current projection angle (set by PROJCT). Returns 1 byte.
- * 18 The text angle (set by TANGLE). Returns 1 word.
- * 19 The text justification settings (set by TJUST). Returns 2 bytes.
- * 20 The text size (set by TSIZE). Returns 1 coord.
- * 21 Viewport parameters. Returns 4 words.
- * 22 Viewport reference point (set by VWRPT). Returns 3 coords.
- * 23 Window parameters (set by WINDOW). Returns 4 coords.
- * 24 Transformed 3D current point. Returns 3 coords.
- * 25 Free memory. Returns 1 word.
- */
+#define PGC_FLAGRD_AREAPT 1     /* 16 words */
+#define PGC_FLAGRD_CLIPH 2      /* 1 byte */
+#define PGC_FLAGRD_CLIPY 3      /* 1 byte */
+#define PGC_FLAGRD_COLOR 4      /* 1 byte */
+#define PGC_FLAGRD_DISPLAY 5    /* 1 byte */
+#define PGC_FLAGRD_DISTAN 6     /* 1 coord */
+#define PGC_FLAGRD_DISTH 7      /* 1 coord */
+#define PGC_FLAGRD_DISTY 8      /* 1 coord */
+#define PGC_FLAGRD_FILMSK 9     /* 1 byte */
+#define PGC_FLAGRD_LINFUN 10    /* 1 byte */
+#define PGC_FLAGRD_LINPAT 11    /* 1 word */
+#define PGC_FLAGRD_MASK 12      /* 1 byte */
+#define PGC_FLAGRD_MDORG 13     /* 3 coords */
+#define PGC_FLAGRD_2DPOS 14     /* 2 coords */
+#define PGC_FLAGRD_3DPOS 15     /* 3 coords */
+#define PGC_FLAGRD_PRMFIL 16    /* 1 byte */
+#define PGC_FLAGRD_PROJCT 17    /* 1 byte */
+#define PGC_FLAGRD_TANGLE 18    /* 1 word */
+#define PGC_FLAGRD_TJUST 19     /* 2 bytes */
+#define PGC_FLAGRD_TSIZE 20     /* 1 coord */
+#define PGC_FLAGRD_VIEW 21      /* 4 words */
+#define PGC_FLAGRD_VWPRT 22     /* 3 coords */
+#define PGC_FLAGRD_WINDOW 23    /* 4 coords */
+#define PGC_FLAGRD_3DPOINT 24   /* 3 coords */
+#define PGC_FLAGRD_MEM 25       /* 1 word */
 #define PGC_FLOOD 0x07      /* color (1 byte) */
 #define PGC_IMAGER 0xD8     /* row,col1,col2 (3 words) */
 #define PGC_IMAGEW 0xD9     /* row,col1,col2,data (3 words)*/
@@ -199,6 +197,13 @@ extern word pgc_flagrd_free_mem();
 #define PGC_LINPAT 0xEA     /* pattern (1 word) */
 #define PGC_LUT 0xEE        /* ink,r,g,b (4 bytes) */
 #define PGC_LUTINT 0xEC     /* palette (1 byte) */
+#define PGC_LUTINT_DEF 0
+#define PGC_LUTINT_16 1
+#define PGC_LUTINT_233 2
+#define PGC_LUTINT_323 3
+#define PGC_LUTINT_332 4
+#define PGC_LUTINT_666 5
+#define PGC_LUTINT_LUTSAV 255
 /* The standard palettes are:
  *
  * 0 - Default 256-colour palette

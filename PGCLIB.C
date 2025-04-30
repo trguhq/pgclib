@@ -311,9 +311,15 @@ inline void pgc_command_hex(char command, char far* buffer, int buffer_len)
 
 /* Here commands start */
 
+/* Read data of flag */
+void pgc_flagrd(byte flag)
+{
+	pgc_command_hex(PGC_FLAGRD, &flag, 1);
+}
+
 /* Returns free memory */
 word pgc_flagrd_free_mem()
 {
-	pgc_command_hex(PGC_FLAGRD, &((byte) 25), 1);
+	pgc_command_hex(PGC_FLAGRD_MEM);
 	return ((word) pgc_output[0] + ((word) pgc_output[1] << 8));
 }
