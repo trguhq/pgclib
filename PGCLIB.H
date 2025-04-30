@@ -61,6 +61,16 @@ extern int pgc_selftest_pass();
 extern int pgc_selftest_rom_low_pass();
 extern int pgc_selftest_rom_high_pass();
 extern int pgc_selftest_ram_pass();
+extern void pgc_ascii_mode();
+extern void pgc_hex_mode();
+extern void pgc_error_mode(char value);
+extern void pgc_cga_mode(char value);
+extern int pgc_get_ascii_mode();
+extern int pgc_get_error_mode();
+extern int pgc_get_cga_mode();
+extern int pgc_get_cga_mode_avail();
+extern word pgc_flagrd_free_mem();
+
 #endif /* PGCLIB_C */
 
 #define PGCLIB_VERSION_MAJOR 0

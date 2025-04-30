@@ -38,6 +38,10 @@ Same zLib license.
 #include "PGCLIB.H"
 
 static char ascii_mode;
+static char error_mode;
+static char cga_mode;
+static char cga_mode_available;
+
 char pgc_output[PGC_BUFFER_SIZE];
 char pgc_error[PGC_BUFFER_SIZE];
 int pgc_output_len;
@@ -49,10 +53,29 @@ int pgc_init()
 	pgc_out_len = 0;
 	pgc_err_len = 0;
 
-	ascii_mode = FALSE;
-	pgc_write(0x43);
-	pgc_write(0x58);
-	pgc_write(PGC_DELIM);
+	ascii_mode = TRUE;		/* set temporarily */
+	pgc_mode_hex();
+
+	error_mode = TRUE;		/* temporary */
+	pgc_error_mode(FALSE);
+
+	if (gl_pgc[PGC_FLAG_CGA] == 0)
+	{
+		cga_mode_available = FALSE;
+	} else
+	{
+		cga_mode_available = TRUE;
+	}
+
+	if (cga_mode_available)
+	{
+		/* starts in CGA mode if it has it, verify this */
+		cga_mode = TRUE;
+	} else
+	{
+		/* if no CGA mode available starts in PGC mode? */
+		cga_mode = FALSE;
+	}
 }
 
 int pgc_version_major()
@@ -121,6 +144,51 @@ inline void pgc_mode_hex()
 		pgc_write(0x58);
 		pgc_write(PGC_DELIM);
 	}
+}
+
+/* Set error mode */
+inline void pgc_error_mode(char value)
+{
+	if (value != error_mode)
+	{
+		gl_pgc[PGC_CMD_ERROR] = value;
+		error_mode = value;
+	}
+}
+
+/* Set CGA mode */
+inline void pgc_cga_mode(char value)
+{
+	if (value != cga_mode)
+	{
+		gl_pgc[PGC_CMD_CGA] = value;
+		cga_mode = value;
+	}
+}
+
+/* these return the stored value rather than read from PGC */
+/* Get ASCII mode or not */
+char pgc_get_ascii_mode()
+{
+	return ascii_mode;
+}
+
+/* Get error mode */
+char pgc_get_error_mode()
+{
+	return error_mode;
+}
+
+/* Get CGA mode */
+char pgc_get_cga_mode()
+{
+	return cga_mode;
+}
+
+/* Get CGA mode availability */
+char pgc_get_cga_mode_avail()
+{
+	return cga_mode_available;
 }
 
 /* Write a byte to the PGC command buffer. */
@@ -232,11 +300,20 @@ inline void pgc_command_hex(char command, char far* buffer, int buffer_len)
 	pgc_write(command);
 
 	p = 0;
-    while (p < buffer_len)
+	while (p < buffer_len)
 	{
 		pgc_write(buffer[p]);
 	}
     
 	pgc_output_read();
 	pgc_error_read();
+}
+
+/* Here commands start */
+
+/* Returns free memory */
+word pgc_flagrd_free_mem()
+{
+	pgc_command_hex(PGC_FLAGRD, &((byte) 25), 1);
+	return ((word) pgc_output[0] + ((word) pgc_output[1] << 8));
 }

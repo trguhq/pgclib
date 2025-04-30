@@ -41,21 +41,25 @@ int main(int argc, char** argv)
     printf("PGCTEST version %i.%i, PGCLIB version %i.%i\n",
         PGCTEST_VERSION_MAJOR, PGCTEST_VERSION_MINOR,
         pgc_version_major(), pgc_version_minor());
-    printf("PGC init:");
+    printf("PGC init: ");
     result = pgc_init();
     printf("%s\n", (result ? "success" : "fail"));
-    printf("PGC self test:");
+    printf("PGC self test: ");
     result = pgc_selftest_pass();
     printf("%s\n", (result ? "success" : "fail"));
-    printf("PGC low ROM test:");
+    printf("PGC low ROM test: ");
     result = pgc_selftest_rom_low_pass();
     printf("%s\n", (result ? "success" : "fail"));
-    printf("PGC high ROM test:");
+    printf("PGC high ROM test: ");
     result = pgc_selftest_rom_high_pass();
     printf("%s\n", (result ? "success" : "fail"));
-    printf("PGC RAM test:");
+    printf("PGC RAM test: ");
     result = pgc_selftest_ram_pass();
     printf("%s\n", (result ? "success" : "fail"));
+    printf("Free memory: %i", pgc_flagrd_free_mem());
+    printf("CGA mode available: ");
+    result = pgc_get_cga_mode_avail();
+    printf("%s\n", (result ? "true" : "false"));
 
     return 0;
 }
