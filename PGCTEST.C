@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     printf("PGC init: ");
     result = pgc_init();
     printf("%s\n", (result ? "success" : "fail"));
-    printf("Firmware version: %i\n", pgc_get_firmware_ver());
+    printf("Firmware version: %d\n", pgc_get_firmware_ver());
     printf("PGC self test: ");
     result = pgc_selftest_pass();
     printf("%s\n", (result ? "success" : "fail"));
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     printf("PGC RAM test: ");
     result = pgc_selftest_ram_pass();
     printf("%s\n", (result ? "success" : "fail"));
-    printf("Free memory: %i", pgc_flagrd_free_mem());
+    printf("Free memory: %d\n", pgc_flagrd_free_mem());
     printf("CGA mode available: ");
     result = pgc_get_cga_mode_avail();
     printf("%s\n", (result ? "true" : "false"));

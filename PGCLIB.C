@@ -47,11 +47,36 @@ char pgc_error[PGC_BUFFER_SIZE];
 int pgc_output_len;
 int pgc_error_len;
 
+/* Forward delcarations */
+int pgc_version_major();
+int pgc_version_minor();
+char pgc_selftest_pass();
+char pgc_selftest_rom_low_pass();
+char pgc_selftest_rom_high_pass();
+char pgc_selftest_ram_pass();
+void pgc_mode_ascii();
+void pgc_mode_hex();
+void pgc_error_mode(char value);
+void pgc_cga_mode(char value);
+char pgc_get_ascii_mode();
+char pgc_get_error_mode();
+char pgc_get_cga_mode();
+char pgc_get_cga_mode_avail();
+word pgc_get_firmware_ver();
+void pgc_write(byte b);
+void pgc_output_read();
+void pgc_error_read();
+char far * pgc_error_string(byte err);
+void pgc_command_string(const char far *s);
+void pgc_command_hex(char command, char far* buffer, int buffer_len);
+void pgc_flagrd(byte flag);
+word pgc_flagrd_free_mem();
+
 /* Initialize library */
 int pgc_init()
 {
-	pgc_out_len = 0;
-	pgc_err_len = 0;
+	pgc_output_len = 0;
+	pgc_error_len = 0;
 
 	ascii_mode = TRUE;		/* set temporarily */
 	pgc_mode_hex();
@@ -76,6 +101,8 @@ int pgc_init()
 		/* if no CGA mode available starts in PGC mode? */
 		cga_mode = FALSE;
 	}
+
+	return 1;
 }
 
 int pgc_version_major()
@@ -89,7 +116,7 @@ int pgc_version_minor()
 }
 
 /* PGC self-test */
-int pgc_selftest_pass()
+char pgc_selftest_pass()
 {
 	if (gl_pgc[PGC_PASS] == 0xA5) return 1;
 
@@ -97,7 +124,7 @@ int pgc_selftest_pass()
 }
 
 /* PGC ROM low self-test */
-int pgc_selftest_rom_low_pass()
+char pgc_selftest_rom_low_pass()
 {
 	if (gl_pgc[PGC_ROM_LOW] == 0x5A) return 1;
 
@@ -105,7 +132,7 @@ int pgc_selftest_rom_low_pass()
 }
 
 /* PGC ROM high self-test */
-int pgc_selftest_rom_high_pass()
+char pgc_selftest_rom_high_pass()
 {
 	if (gl_pgc[PGC_ROM_HIGH] == 0x55) return 1;
 
@@ -113,7 +140,7 @@ int pgc_selftest_rom_high_pass()
 }
 
 /* PGC RAM self-test */
-int pgc_selftest_ram_pass()
+char pgc_selftest_ram_pass()
 {
 	if (gl_pgc[PGC_RAM] == 0xA5) return 1;
 
@@ -121,33 +148,37 @@ int pgc_selftest_ram_pass()
 }
 
 /* Set ASCII mode */
-inline void pgc_mode_ascii()
+void pgc_mode_ascii()
 {
 	if (ascii_mode == FALSE)
 	{
 		ascii_mode = TRUE;
-		/* pgc_write(PGC_CA); */
+		pgc_write(PGC_CA);
+		/*
 		pgc_write(0x43);
 		pgc_write(0x41);
 		pgc_write(PGC_DELIM);
+		*/
 	}
 }
 
 /* Set Hex mode */
-inline void pgc_mode_hex()
+void pgc_mode_hex()
 {
 	if (ascii_mode == TRUE)
 	{
 		ascii_mode = FALSE;
-		/* pgc_write(PGC_CX); */
+		pgc_write(PGC_CX);
+		/*
 		pgc_write(0x43);
 		pgc_write(0x58);
 		pgc_write(PGC_DELIM);
+		*/
 	}
 }
 
 /* Set error mode */
-inline void pgc_error_mode(char value)
+void pgc_error_mode(char value)
 {
 	if (value != error_mode)
 	{
@@ -157,7 +188,7 @@ inline void pgc_error_mode(char value)
 }
 
 /* Set CGA mode */
-inline void pgc_cga_mode(char value)
+void pgc_cga_mode(char value)
 {
 	if (value != cga_mode)
 	{
@@ -200,7 +231,7 @@ word pgc_get_firmware_ver()
 }
 
 /* Write a byte to the PGC command buffer. */
-inline void pgc_write(byte b)
+void pgc_write(byte b)
 {
 	gl_pgc[PGC_IN_WRPTR] = b;
 	++PGC_IN_WRPTR;
@@ -274,6 +305,8 @@ char far * pgc_error_string(byte err)
 			return("Missing paramerter.");
 	}
 
+	return("Unknown.");)
+
 }
 
 /* Write an ASCII command to the PGC. */
@@ -299,7 +332,7 @@ void pgc_command_string(const char far *s)
  * buffer_len = length of command data
  * 
  */
-inline void pgc_command_hex(char command, char far* buffer, int buffer_len)
+void pgc_command_hex(char command, char far* buffer, int buffer_len)
 {
 	int p;
 
@@ -328,6 +361,6 @@ void pgc_flagrd(byte flag)
 /* Returns free memory */
 word pgc_flagrd_free_mem()
 {
-	pgc_command_hex(PGC_FLAGRD_MEM);
+	pgc_command_hex(PGC_FLAGRD_MEM, NULL, 0);
 	return ((word) pgc_output[0] + ((word) pgc_output[1] << 8));
 }

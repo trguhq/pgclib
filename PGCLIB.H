@@ -54,22 +54,28 @@ extern char pgc_error[];        /* error buffer */
 extern int pgc_output_len;      /* length of output */
 extern int pgc_error_len;       /* length of error */
 
-extern int pgc_init();
 extern int pgc_version_major();
 extern int pgc_version_minor();
-extern int pgc_selftest_pass();
-extern int pgc_selftest_rom_low_pass();
-extern int pgc_selftest_rom_high_pass();
-extern int pgc_selftest_ram_pass();
-extern void pgc_ascii_mode();
-extern void pgc_hex_mode();
+extern char pgc_selftest_pass();
+extern char pgc_selftest_rom_low_pass();
+extern char pgc_selftest_rom_high_pass();
+extern char pgc_selftest_ram_pass();
+extern void pgc_mode_ascii();
+extern void pgc_mode_hex();
 extern void pgc_error_mode(char value);
 extern void pgc_cga_mode(char value);
-extern int pgc_get_ascii_mode();
-extern int pgc_get_error_mode();
-extern int pgc_get_cga_mode();
-extern int pgc_get_cga_mode_avail();
+extern char pgc_get_ascii_mode();
+extern char pgc_get_error_mode();
+extern char pgc_get_cga_mode();
+extern char pgc_get_cga_mode_avail();
 extern word pgc_get_firmware_ver();
+extern void pgc_write(byte b);
+extern void pgc_output_read();
+extern void pgc_error_read();
+extern char far * pgc_error_string(byte err);
+extern void pgc_command_string(const char far *s);
+extern void pgc_command_hex(char command, char far* buffer, int buffer_len);
+extern void pgc_flagrd(byte flag);
 extern word pgc_flagrd_free_mem();
 
 #endif /* PGCLIB_C */
