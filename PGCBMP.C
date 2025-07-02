@@ -163,6 +163,8 @@ Same zLib license.
      pgc_mode_cga(FALSE);
      pgc_mode_hex();
 
+     printf("Loading palette.");
+     
  /* Load the palette */
      for (n = 0; n < 256; n++)
      {
@@ -170,6 +172,8 @@ Same zLib license.
                     palette[4*n+1] / 16,
                     palette[4*n]   / 16);
      }
+
+     printf("%i color palette loaded.", n);
  
  /* Switch the PGC screen in */
      wb = (bmih.biWidth + 3) & 0xFFFC;

@@ -64,7 +64,7 @@ extern char pgc_selftest_rom_high_pass();
 extern char pgc_selftest_ram_pass();
 extern void pgc_mode_ascii();
 extern void pgc_mode_hex();
-extern void pgc_error_mode(char value);
+extern void pgc_mode_error(char value);
 extern void pgc_mode_cga(char value);
 extern char pgc_get_mode_ascii();
 extern char pgc_get_mode_error();

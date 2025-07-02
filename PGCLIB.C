@@ -57,8 +57,8 @@ char pgc_selftest_rom_high_pass();
 char pgc_selftest_ram_pass();
 void pgc_mode_ascii();
 void pgc_mode_hex();
-void pgc_error_mode(char value);
-void pgc_cga_mode(char value);
+void pgc_mode_error(char value);
+void pgc_mode_cga(char value);
 char pgc_get_mode_ascii();
 char pgc_get_mode_error();
 char pgc_get_mode_cga();
@@ -82,14 +82,14 @@ int pgc_present()
 	int n;
 	int present = 1;
 
-	byte bt = gl_pgc[IN_WRPTR];
+	byte bt = gl_pgc[PGC_IN_WRPTR];
 	
 	for (n = 0; n < 256; n++)
 	{
-		gl_pgc[IN_WRPTR] = n;
-		if (gl_pgc[IN_WRPTR] != n) present = 0;	
+		gl_pgc[PGC_IN_WRPTR] = n;
+		if (gl_pgc[PGC_IN_WRPTR] != n) present = 0;	
 	}
-	gl_pgc[IN_WRPTR] = bt;
+	gl_pgc[PGC_IN_WRPTR] = bt;
 	return present;
 }
 
@@ -338,7 +338,7 @@ char far * pgc_error_string(byte err)
 			return("Missing paramerter.");
 	}
 
-	return("Unknown.");)
+	return("Unknown.");
 
 }
 
@@ -388,11 +388,12 @@ void pgc_command_hex(char command, char far* buffer, int buffer_len)
 /* add a LUT (palette) entry */
 void pgc_lut(byte ink, byte r, byte g, byte b)
 {
-	byte command[3];
-	command[0] = r;
-	command[1] = g;
-	command[2] = b;
-	pgc_command_hex(PGC_LUT, command, 3);
+	byte command[4];
+	command[0] = ink;
+	command[1] = r;
+	command[2] = g;
+	command[3] = b;
+	pgc_command_hex(PGC_LUT, command, 4);
 
 }
 
