@@ -39,19 +39,6 @@ Same zLib license.
  #include <conio.h>
  #include "PGCLIB.H"
  
- typedef unsigned char byte;
- 
- /* Base address of the PGC transfer buffer*/
- #define gl_pgc ((byte far *)MK_FP(0xC600, 0))
- 
- /* PGC ring buffer pointers */
- #define IN_WRPTR (gl_pgc[0x300])
- #define IN_RDPTR (gl_pgc[0x301])
- #define OUT_WRPTR (gl_pgc[0x302])
- #define OUT_RDPTR (gl_pgc[0x303])
- #define ERR_WRPTR (gl_pgc[0x304])
- #define ERR_RDPTR (gl_pgc[0x305])
- 
  int gl_pgc_present;
  
  /* Bitmap structures */
@@ -160,11 +147,11 @@ Same zLib license.
         return 1;
      };
 
-     pgc_mode_cga(FALSE);
      pgc_mode_hex();
-
-     printf("Loading palette.");
+     pgc_mode_cga(FALSE);
      
+     printf("Loading palette.\n");
+
  /* Load the palette */
      for (n = 0; n < 256; n++)
      {
@@ -173,7 +160,7 @@ Same zLib license.
                     palette[4*n]   / 16);
      }
 
-     printf("%i color palette loaded.", n);
+     printf("%i color palette loaded.\n", n);
  
  /* Switch the PGC screen in */
      wb = (bmih.biWidth + 3) & 0xFFFC;
@@ -228,7 +215,7 @@ Same zLib license.
      getch();
 
  /* Switch back to CGA display */
-     pgc_mode_cga(true);
+     pgc_mode_cga(TRUE);
  
      return 0;
  }
