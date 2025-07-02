@@ -37,10 +37,10 @@ Same zLib license.
 #include <conio.h>
 #include "PGCLIB.H"
 
-static char ascii_mode;
-static char error_mode;
-static char cga_mode;
-static char cga_mode_available;
+static char mode_ascii;
+static char mode_error;
+static char mode_cga;
+static char mode_cga_available;
 
 char pgc_output[PGC_BUFFER_SIZE];
 char pgc_error[PGC_BUFFER_SIZE];
@@ -48,6 +48,7 @@ int pgc_output_len;
 int pgc_error_len;
 
 /* Forward delcarations */
+int pgc_present();
 int pgc_version_major();
 int pgc_version_minor();
 char pgc_selftest_pass();
@@ -58,19 +59,39 @@ void pgc_mode_ascii();
 void pgc_mode_hex();
 void pgc_error_mode(char value);
 void pgc_cga_mode(char value);
-char pgc_get_ascii_mode();
-char pgc_get_error_mode();
-char pgc_get_cga_mode();
-char pgc_get_cga_mode_avail();
+char pgc_get_mode_ascii();
+char pgc_get_mode_error();
+char pgc_get_mode_cga();
+char pgc_get_mode_cga_avail();
 word pgc_get_firmware_ver();
 void pgc_write(byte b);
+void pgc_write_len(byte far *buffer, short len);
 void pgc_output_read();
 void pgc_error_read();
 char far * pgc_error_string(byte err);
 void pgc_command_string(const char far *s);
 void pgc_command_hex(char command, char far* buffer, int buffer_len);
+void pgc_lut(byte ink, byte r, byte g, byte b);
 void pgc_flagrd(byte flag);
 word pgc_flagrd_free_mem();
+
+
+/* PGC presence test probes for memory at C600:0 */
+int pgc_present()
+{
+	int n;
+	int present = 1;
+
+	byte bt = gl_pgc[IN_WRPTR];
+	
+	for (n = 0; n < 256; n++)
+	{
+		gl_pgc[IN_WRPTR] = n;
+		if (gl_pgc[IN_WRPTR] != n) present = 0;	
+	}
+	gl_pgc[IN_WRPTR] = bt;
+	return present;
+}
 
 /* Initialize library */
 int pgc_init()
@@ -78,28 +99,28 @@ int pgc_init()
 	pgc_output_len = 0;
 	pgc_error_len = 0;
 
-	ascii_mode = TRUE;		/* set temporarily */
+	mode_ascii = TRUE;		/* set temporarily */
 	pgc_mode_hex();
 
-	error_mode = TRUE;		/* temporary */
-	pgc_error_mode(FALSE);
+	mode_ascii = TRUE;		/* temporary */
+	pgc_mode_error(FALSE);
 
 	if (gl_pgc[PGC_FLAG_CGA] == 0)
 	{
-		cga_mode_available = FALSE;
+		mode_cga_available = FALSE;
 	} else
 	{
-		cga_mode_available = TRUE;
+		mode_cga_available = TRUE;
 	}
 
-	if (cga_mode_available)
+	if (mode_cga_available)
 	{
 		/* starts in CGA mode if it has it, verify this */
-		cga_mode = TRUE;
+		mode_cga = TRUE;
 	} else
 	{
 		/* if no CGA mode available starts in PGC mode? */
-		cga_mode = FALSE;
+		mode_cga = FALSE;
 	}
 
 	return 1;
@@ -150,9 +171,9 @@ char pgc_selftest_ram_pass()
 /* Set ASCII mode */
 void pgc_mode_ascii()
 {
-	if (ascii_mode == FALSE)
+	if (mode_ascii == FALSE)
 	{
-		ascii_mode = TRUE;
+		mode_ascii = TRUE;
 		pgc_write(PGC_CA);
 		/*
 		pgc_write(0x43);
@@ -165,9 +186,9 @@ void pgc_mode_ascii()
 /* Set Hex mode */
 void pgc_mode_hex()
 {
-	if (ascii_mode == TRUE)
+	if (mode_ascii == TRUE)
 	{
-		ascii_mode = FALSE;
+		mode_ascii = FALSE;
 		pgc_write(PGC_CX);
 		/*
 		pgc_write(0x43);
@@ -178,48 +199,48 @@ void pgc_mode_hex()
 }
 
 /* Set error mode */
-void pgc_error_mode(char value)
+void pgc_mode_error(char value)
 {
-	if (value != error_mode)
+	if (value != mode_error)
 	{
 		gl_pgc[PGC_CMD_ERROR] = value;
-		error_mode = value;
+		mode_error = value;
 	}
 }
 
 /* Set CGA mode */
-void pgc_cga_mode(char value)
+void pgc_mode_cga(char value)
 {
-	if (value != cga_mode)
+	if (value != mode_cga)
 	{
 		gl_pgc[PGC_CMD_CGA] = value;
-		cga_mode = value;
+		mode_cga = value;
 	}
 }
 
 /* these return the stored value rather than read from PGC */
 /* Get ASCII mode or not */
-char pgc_get_ascii_mode()
+char pgc_get_mode_ascii()
 {
-	return ascii_mode;
+	return mode_ascii;
 }
 
 /* Get error mode */
-char pgc_get_error_mode()
+char pgc_get_mode_error()
 {
-	return error_mode;
+	return mode_error;
 }
 
 /* Get CGA mode */
-char pgc_get_cga_mode()
+char pgc_get_mode_cga()
 {
-	return cga_mode;
+	return mode_cga;
 }
 
 /* Get CGA mode availability */
-char pgc_get_cga_mode_avail()
+char pgc_get_mode_cga_avail()
 {
-	return cga_mode_available;
+	return mode_cga_available;
 }
 
 /* Get firmware version */
@@ -235,6 +256,18 @@ void pgc_write(byte b)
 {
 	gl_pgc[PGC_IN_WRPTR] = b;
 	++PGC_IN_WRPTR;
+}
+
+/* Write series of bytes to PGC */
+void pgc_write_len(byte far *buffer, short len)
+{
+	int i;
+
+	for(i=0; i<len; i++)
+	{
+		gl_pgc[PGC_IN_WRPTR] = buffer[i];
+		++PGC_IN_WRPTR;
+	}
 }
 
 /* Read output buffer */
@@ -352,6 +385,17 @@ void pgc_command_hex(char command, char far* buffer, int buffer_len)
 
 /* Here commands start */
 
+/* add a LUT (palette) entry */
+void pgc_lut(byte ink, byte r, byte g, byte b)
+{
+	byte command[3];
+	command[0] = r;
+	command[1] = g;
+	command[2] = b;
+	pgc_command_hex(PGC_LUT, command, 3);
+
+}
+
 /* Read data of flag */
 void pgc_flagrd(byte flag)
 {
@@ -364,3 +408,4 @@ word pgc_flagrd_free_mem()
 	pgc_command_hex(PGC_FLAGRD_MEM, NULL, 0);
 	return ((word) pgc_output[0] + ((word) pgc_output[1] << 8));
 }
+

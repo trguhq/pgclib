@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     printf("%s\n", (result ? "success" : "fail"));
     printf("Free memory: %d\n", pgc_flagrd_free_mem());
     printf("CGA mode available: ");
-    result = pgc_get_cga_mode_avail();
+    result = pgc_get_mode_cga_avail();
     printf("%s\n", (result ? "true" : "false"));
 
     return 0;
