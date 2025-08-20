@@ -28,6 +28,9 @@ Copyright (c) 2025 trguhq
 Same zLib license.
 */
 
+#indef DEBUG
+#define DEBUG
+
 #define PGCLIB_C
 
 #include <stdio.h>
@@ -171,31 +174,34 @@ char pgc_selftest_ram_pass()
 /* Set ASCII mode */
 void pgc_mode_ascii()
 {
-	if (mode_ascii == FALSE)
+/*	if (mode_ascii == FALSE)
 	{
+*/
 		mode_ascii = TRUE;
 		pgc_write(PGC_CA);
-		/*
+/*
 		pgc_write(0x43);
 		pgc_write(0x41);
-		pgc_write(PGC_DELIM);
-		*/
+		pgc_write(PGC_DELIM);		
 	}
+*/
 }
 
 /* Set Hex mode */
 void pgc_mode_hex()
 {
+/*
 	if (mode_ascii == TRUE)
 	{
+*/
 		mode_ascii = FALSE;
 		pgc_write(PGC_CX);
-		/*
+/*
 		pgc_write(0x43);
 		pgc_write(0x58);
 		pgc_write(PGC_DELIM);
-		*/
 	}
+*/
 }
 
 /* Set error mode */
@@ -211,7 +217,7 @@ void pgc_mode_error(char value)
 /* Set CGA mode */
 void pgc_mode_cga(char value)
 {
-	if (value != mode_cga)
+	if (1) /* (value != mode_cga) */
 	{
 		gl_pgc[PGC_CMD_CGA] = value;
 		mode_cga = value;
@@ -265,9 +271,15 @@ void pgc_write_len(byte far *buffer, short len)
 
 	for(i=0; i<len; i++)
 	{
+#ifdef DEBUG
+		printf("%x", buffer[i]);
+#endif
 		gl_pgc[PGC_IN_WRPTR] = buffer[i];
 		++PGC_IN_WRPTR;
 	}
+#ifdef DEBUG
+	printf("\n");
+#endif
 }
 
 /* Read output buffer */
@@ -321,7 +333,7 @@ char far * pgc_error_string(byte err)
 		case PGC_ERR_MEM:
 			return("Out of memory.");
 		case PGC_ERR_OVER:
-			return("Arithmetic verflow.");
+			return("Arithmetic overflow.");
 		case PGC_ERR_DIGIT:
 			return("Need digit.");
 		case PGC_ERR_OP:
@@ -373,8 +385,7 @@ void pgc_command_hex(char command, char far* buffer, int buffer_len)
 
 	pgc_write(command);
 
-	p = 0;
-	while (p < buffer_len)
+	for (p = 0; p < buffer_len; p++)
 	{
 		pgc_write(buffer[p]);
 	}

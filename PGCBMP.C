@@ -72,8 +72,8 @@ Same zLib license.
  
   /* C Programmer's Disease: Allocating fixed-length buffers rather than 
   * doing proper dynamic memory sizing */
- static char cmdbuf[256];
- static byte monsterbuf[3000];
+ static far char cmdbuf[256];
+ static far byte monsterbuf[3000];
  static byte pic_line[1024];
  static int gl_monstercount;
   
@@ -146,6 +146,8 @@ Same zLib license.
         fclose(fp);
         return 1;
      };
+
+     printf("Disabling CGA mode.\n");
 
      pgc_mode_hex();
      pgc_mode_cga(FALSE);
