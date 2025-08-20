@@ -11,4 +11,16 @@ facilitate direct access with your own code.
 This is not in a working state at the moment and has not even been
 compiled to test. Purely a development snapshot.
 
+## Sample programs
+
+Samples are included for development and testing purposes.
+
+### PGCTEST
+
+Doesn't seem to work correctly right now.
+
+### PGCBMP
+
+Not working.
+
 ## API
